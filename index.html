@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>SnapCapt</title>
+	<link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css>
+	<link rel=stylesheet href=./snap.css>
+	<style>.ng-cloak{display:none !important}</style>
+</head>
+<body ng-app='snapcapt' ng-controller=ScTop>
+<div id=wrap>
+
+	<div class='row'>
+		<div class='col-md-8'>
+			<h4 class='text-center'>
+				<a onclick='$("#pic-upload").click()'>Pick a file</a> or drag and drop
+				to the box.</a>
+			</h4>
+
+			<div id='image-panel'>
+				<div id='image-panel-container' ng-class="{'rendering':!isEditing}">
+					<!-- preview -->
+					<svg id='preview' ng-show='isEditing'
+						xmlns:xlink='http://www.w3.org/1999/xlink'>
+						<image id='image-svg' x=0 y=0></image>
+						<foreignObject id='caption-container'>
+							<div id='caption' contenteditable=true>Hello World</div>
+						</foreignObject>
+					</svg>
+					<!-- render -->
+					<canvas id='render' ng-show='!isEditing'></canvas>
+				</div>
+			</div>
+
+			<div id='image-control'>
+				<div class='pull-left'>
+					<div ng-hide="!isEditing">
+						<a ng-click='isEditing=!isEditing'>RENDER</a> |
+						<a ng-click="isMoving=!isMoving" ng-hide="!isMoving">EDIT</a>
+						<a ng-click="isMoving=!isMoving" ng-hide="isMoving">MOVE</a>
+					</div>
+					<div ng-hide="isEditing">
+						<a ng-click='isEditing=!isEditing'>PREVIEW</a>
+					</div>
+				</div>
+				<div class='pull-right' ng-hide='isEditing'>
+					<div ng-show="hasBlob">
+						<a target=_blank id=result-svg>SVG</a> |
+						<a target=_blank id=result-png>PNG</a>
+					</div>
+					<div ng-show="!hasBlob">
+						Right-click on the box to save image.
+					</div>
+				</div>
+			</div>
+			<div class='clearfix'></div>
+		</div>
+
+		<div id='emoji-panel' class='col-md-4 container-fluid'>
+			<div id="emoji-nav">
+				<a ng-repeat="a in emoji.grp" class='btn btn-xs btn-primary'
+					title="{{a[1]}}" ng-class="{'active': a[0]==emoji.active}"
+					ng-click="emoji.active=a[0]">
+					{{a[0]}}
+				</a>
+			</div>
+			<div id='emoji'>
+				<div ng-repeat="(k, v) in emoji.ico" class='emoji'
+					ng-show="emoji.active==k">
+					<span ng-repeat="a in v track by $index">
+						<a ng-click="insertEmoji(a)">{{a}}</a>
+						<span> </span>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div id=preload>
+	<img id=loader-image>
+	<canvas id=loader-canvas></canvas>
+	<input type=file name=pic id=pic-upload>
+</div> 
+
+
+<script src=https://code.jquery.com/jquery-1.12.4.min.js></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.6/angular.min.js></script>
+<script src=./snap.js></script>
+
