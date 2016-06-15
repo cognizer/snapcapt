@@ -1,7 +1,32 @@
 
+String.prototype.scalar2surrogatePair = function(){
+	var i, hi, lo, result = [];
+	for (i=0; i<this.length; i+=2) {
+		hi = this.charCodeAt(i);
+		lo = this.charCodeAt(i + 1);
+		if (!lo) {
+			result.push(hi.toString(16));
+			break;
+		}
+		// unicode surrogate pair to scalar
+		if (hi >= 0xd800 && hi <= 0xdbff && lo >= 0xdc00 && lo <= 0xdfff) {
+			result.push(
+				(((hi - 0xd800) * 0x400) + (lo - 0xdc00) + 0x10000).
+					toString(16)
+			);
+		} else {
+			result.push(hi.toString(16), lo.toString(16));
+		}
+	}
+	return result.join('-');
+};
 
 angular.module('snapcapt', [
-]).controller('ScTop', function($scope, $http){
+]).filter('unisp', function(){
+	return function(u) {
+		return u.scalar2surrogatePair();
+	};
+}).controller('ScTop', function($scope, $http){
 
 	var s = $scope;
 
@@ -25,6 +50,9 @@ angular.module('snapcapt', [
 		ico: {},
 		active: null,
 		range: null,
+		// TODO: use images if glyphs not available
+		withImage: true,
+		imgPath: 'https://assets-cdn.github.com/images/icons/emoji/unicode',
 	};
 
 	s.isEditing = true;

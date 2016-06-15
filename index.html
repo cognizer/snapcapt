@@ -70,6 +70,10 @@
 					<span ng-repeat="a in v track by $index">
 						<a ng-click="insertEmoji(a)">{{a}}</a>
 						<span> </span>
+						<!--
+						<img ng-show='emoji.withImage'
+							src="{{emoji.imgPath}}/{{a | unisp}}.png" alt='{{ a }}'>
+						-->
 					</span>
 				</div>
 			</div>
